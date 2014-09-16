@@ -4,11 +4,12 @@
 <link rel="import" href="../core-input/core-input.html">
 
 
-<polymer-element name="th-chart-editor" attributes="">
+<polymer-element name="th-chart-editor" attributes="targetPath">
   <template>
     <style>
       :host{
         font-size: 12px;
+        display: block;
 
       } 
       textarea, input { 
@@ -18,20 +19,32 @@
       }
       .panel {
         position: absolute;
-        top: 5px;
-        right: -200px;
+       /* top: 5px;
+        right: -200px;*/
         color: black;
-        width: 150px;
-        background: rgba(255,255,255,0.7);
         z-index: 2;
         padding: 3px;
+        font-family: arial, sans-serif;
+      }
+      .panel .controls {
+        width: 200px;
+        background: rgba(255,255,255,0.7);
+
       }
       .panel label {
         display: inline-block;
       }
 
       .panel ul li {
-        height: 25px;
+        height: 20px;
+        font-size: 0.9em;
+      }
+
+      .panel h4 {
+        font-weight: normal;
+        padding: 0;
+        margin: 5px 0;
+        border-bottom: 1px solid #AAA;
       }
 
       .input-field {
@@ -46,10 +59,19 @@
         padding: 0;
       }
 
-      a {
+      .panel a {
+        background-color: #e5e5e5;
+        text-decoration: none;
+        padding: 2px 4px;
         color: #555;
-
       }
+
+      .edit-icon {
+        padding: 2px 1px;
+        font-size: 18px;
+        line-height: 14px;
+      }
+
 
       .top_handle {
         position: absolute;
@@ -57,8 +79,10 @@
         height: 8px;
         border-top: 1px solid black;
         border-left: 1px solid black;
-        top: 0;
+
+/*        top: 0;
         left: 0;
+*/
         z-index: 100;
 
       }
@@ -70,12 +94,14 @@
         border-bottom: 2px solid black;
         border-right: 2px solid black;
         cursor: move;
-        bottom: 0;
+
+/*        bottom: 0;
         right: 0;
+*/
         z-index: 100;
       }
       .dragging {
-        opacity: 0.5;
+        opacity: 0.4;
       }
 
       .polymer-ui-collapsible-header {
@@ -84,39 +110,46 @@
 
     </style>
     <div class="top_handle"></div>
-    <div id="resize_handle" draggable="true"></div>
+    <div id="resize_handle" draggable="true" style="top: {{elementToEdit.chartHeight+48}}px; left: {{elementToEdit.chartWidth-10}}px;"></div>
     <div class="panel">
-      <polymer-ui-accordion selected="none">
       <polymer-ui-collapsible>
-        <div class="polymer-ui-collapsible-header"><h4>Data</h4></div>
-        <div class="content">
-        <template repeat="{{dataItem, index of chartData  }}">
+        <div class="polymer-ui-collapsible-header edit-icon" style="width: 10px;">
+          &#x270E;
+        </div>
+        <div class="content controls">
           <polymer-ui-accordion selected="none">
-            <polymer-ui-collapsible>          
-              <div class="polymer-ui-collapsible-header">{{index}}:</div>
+          <polymer-ui-collapsible>
+            <div class="polymer-ui-collapsible-header"><h4>Data</h4></div>
+            <div class="content">
+            <template repeat="{{dataItem, index of chartData  }}">
+              <polymer-ui-accordion selected="none">
+                <polymer-ui-collapsible>          
+                  <div class="polymer-ui-collapsible-header">{{index}}:</div>
 
-              <ul class="content">
-                <template repeat="{{field in chartDataFields}}">
-                  <li>
-                    <label>{{field.friendly}}:</label>
+                  <ul class="content">
+                    <template repeat="{{field in chartDataFields}}">
+                      <li>
+                        <label>{{field.friendly}}:</label>
 
-                      <!--     
-                      core-input not working, error when binding value                  
+                          <!--     
+                          core-input not working, error when binding value                  
 
-                      <core-input id="data_{{index}}_{{field.name}}" value="{{field.friendly}}" placeHolder="{{field.friendly}}"></core-input>
-                       -->
-                      <input type="text" class="input-field" id="data_{{index}}_{{field.name}}"  value="{{chartData[index][field.name]}}"> 
- 
-                  </li>
-                </template>
-                <template if="{{elementMeta.inputAttr.chartData.type=='table-repeating'}}">
-                  <a href="javascript:void(0)" id="remove_data_{{index}}">remove</a>
-                </template>
+                          <core-input id="data_{{index}}_{{field.name}}" value="{{field.friendly}}" placeHolder="{{field.friendly}}"></core-input>
+                           -->
+                          <input type="text" class="input-field" id="data_{{index}}_{{field.name}}"  value="{{chartData[index][field.name]}}"> 
+     
+                      </li>
+                    </template>
+                    <template if="{{elementMeta.inputAttr.chartData.type=='table-repeating'}}">
+                      <a href="javascript:void(0)" id="remove_data_{{index}}">remove</a>
+                    </template>
 
-                <hr>
-              </ul>
-            </polymer-ui-collapsible>
-          </polymer-ui-accordion>
+                    <hr>
+                  </ul>
+                </polymer-ui-collapsible>
+              </polymer-ui-accordion>
+            </div>
+          </polymer-ui-collapsible>
         </template>
 <!--       
         for donut chart (not working)
@@ -146,7 +179,7 @@
         <ul class="content">
           <template repeat="{{field in propertiesFields}}">
             <li>
-              <label>{{field}}:</label><input type="text" class="input-field" id="{{field}}"  value="{{elementToEdit[field]}}" disabled> 
+              <label>{{field}}:</label><input type="text" class="input-field" id="{{field}}"  value="{{elementToEdit[field]}}"> 
            </li>
           </template>
         </ul>
@@ -160,10 +193,17 @@
 
       Polymer('th-chart-editor', {
         elementMeta: {},
+        targetPath: null,
         domReady: function() {
           var self = this;
 
-          this.elementToEdit = this.parentNode;
+          //this.elementToEdit = this.parentNode;
+          
+          self.elementToEdit = document.querySelector(self.targetPath);
+          if(!self.elementToEdit) {
+            return;
+          }
+
           console.log("this.elementToEdit");
           console.log(this.elementToEdit);
           this.elementMeta = this.elementToEdit.getMetaData();

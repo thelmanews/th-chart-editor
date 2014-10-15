@@ -27,7 +27,7 @@
         font-family: arial, sans-serif;
       }
       .panel .controls {
-        width: 200px;
+        width: 170px;
         background: rgba(255,255,255,0.7);
 
       }
@@ -111,6 +111,7 @@
     </style>
     <div class="top_handle"></div>
     <div id="resize_handle" draggable="true" style="top: {{elementToEdit.chartHeight+48}}px; left: {{elementToEdit.chartWidth-10}}px;"></div>
+    
     <div class="panel">
       <polymer-ui-collapsible>
         <div class="polymer-ui-collapsible-header edit-icon" style="width: 10px;">
@@ -148,45 +149,53 @@
                   </ul>
                 </polymer-ui-collapsible>
               </polymer-ui-accordion>
-            </div>
-          </polymer-ui-collapsible>
-        </template>
+
+            </template>
+            <a href="javascript:void(0)" id="add_data" class="{{elementToEdit.id}}">Add Datapoint</a>
+
+          </div> <!-- class="content? -->
+        </polymer-ui-collapsible>
 <!--       
         for donut chart (not working)
         <template if="{{elementMeta.inputAttr.chartData.type=='table-repeating'}}">
 
  -->
-        <a href="javascript:void(0)" id="add_data" class="{{elementToEdit.id}}">Add Datapoint</a>
 
 <!--       </template>
  -->
 
-        </div>
-      </polymer-ui-collapsible>
-      <polymer-ui-collapsible>
-        <div class="polymer-ui-collapsible-header"><h4>Functions</h4></div>
-        <ul class="content">
-            <li>
-              <a id="reset_function" href="javascript:void(0)">Reset</a>
-            </li>
-            <li>
-              <a id="animate_function" href="javascript:void(0)">Animate</a>
-            </li>
-        </ul>
-      </polymer-ui-collapsible>
-      <polymer-ui-collapsible>
-        <div class="polymer-ui-collapsible-header"><h4>Properties</h4></div>
-        <ul class="content">
-          <template repeat="{{field in propertiesFields}}">
-            <li>
-              <label>{{field}}:</label><input type="text" class="input-field" id="{{field}}"  value="{{elementToEdit[field]}}"> 
-           </li>
-          </template>
-        </ul>
-      </polymer-ui-collapsible>
-    </polymer-ui-accordion>
+       
+      
+        <polymer-ui-collapsible>
+          <div class="polymer-ui-collapsible-header"><h4>Functions</h4></div>
+          <ul class="content">
+              <li>
+                <a id="reset_function" href="javascript:void(0)">Reset</a>
+              </li>
+              <li>
+                <a id="animate_function" href="javascript:void(0)">Animate</a>
+              </li>
+          </ul>
+        </polymer-ui-collapsible>
+        <polymer-ui-collapsible>
+          <div class="polymer-ui-collapsible-header"><h4>Properties</h4></div>
+          <ul class="content">
+            <template repeat="{{field in propertiesFields}}">
+              <li>
+                <label>{{field}}:</label><input type="text" class="input-field" id="{{field}}"  value="{{elementToEdit[field]}}"> 
+             </li>
+            </template>
+          </ul>
+        </polymer-ui-collapsible>
+      </polymer-ui-accordion>
+    </div> <!-- controls-->
 
-    </div>
+    </polymer-ui-collapsible>
+
+  </div> <!-- panel -->
+
+  <content></content>
+
   </template>
 
   <script>
